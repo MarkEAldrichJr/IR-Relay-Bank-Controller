@@ -1,0 +1,146 @@
+//Lets user control 8-part relay bank using an IR remote.
+//By Mark Aldrich
+
+#include <IRremote.h> // include the IRremote library
+
+const byte recieverPin = 2;
+const byte Relay1 = 3;
+const byte Relay2 = 4;
+const byte Relay3 = 5;
+const byte Relay4 = 7;
+const byte Relay5 = 8;
+const byte Relay6 = 9;
+const byte Relay7 = 10;
+const byte Relay8 = 11;
+
+const unsigned long buttonOne = 0xFF6897;
+const unsigned long buttonTwo = 0xFF9867;
+const unsigned long buttonThree = 0xFFB04F;
+const unsigned long buttonFour = 0xFF30CF;
+const unsigned long buttonFive = 0xFF18E7;
+const unsigned long buttonSix = 0xFF7A85;
+const unsigned long buttonSeven = 0xFF10EF;
+const unsigned long buttonEight = 0xFF38C7;
+const unsigned long buttonAll = 0xFF02FD; //ok button, turns everything on or off;
+
+int Relay1Power = LOW;
+int Relay2Power = LOW;
+int Relay3Power = LOW;
+int Relay4Power = LOW;
+int Relay5Power = LOW;
+int Relay6Power = LOW;
+int Relay7Power = LOW;
+int Relay8Power = LOW;
+int RelayAllPower = LOW;
+
+IRrecv receiver(recieverPin); // create a receiver object of the IRrecv class
+decode_results results; // create a results object of the decode_results class
+
+void setup()
+{
+  receiver.enableIRIn(); // enable the receiver
+  receiver.blink13(true); // enable blinking of the built-in LED when an IR signal is received
+  pinMode(Relay1, OUTPUT);
+  pinMode(Relay2, OUTPUT);
+  pinMode(Relay3, OUTPUT);
+  pinMode(Relay4, OUTPUT);
+  pinMode(Relay5, OUTPUT);
+  pinMode(Relay6, OUTPUT);
+  pinMode(Relay7, OUTPUT);
+  pinMode(Relay8, OUTPUT);
+}
+
+void loop()
+{
+  if (receiver.decode(&results)) 
+  {
+    switch(results.value)
+    {
+      case buttonOne:
+        Relay1Power = SwitchPower(Relay1, Relay1Power);
+        break;
+      case buttonTwo:
+        Relay2Power = SwitchPower(Relay2, Relay2Power);
+        break;
+      case buttonThree:
+        Relay3Power = SwitchPower(Relay3, Relay3Power);
+        break;
+      case buttonFour:
+        Relay4Power = SwitchPower(Relay4, Relay4Power);
+        break;
+      case buttonFive:
+        Relay5Power = SwitchPower(Relay5, Relay5Power);
+        break;
+      case buttonSix:
+        Relay6Power = SwitchPower(Relay6, Relay6Power);
+        break;
+      case buttonSeven:
+        Relay7Power = SwitchPower(Relay7, Relay7Power);
+        break;
+      case buttonEight:
+        Relay8Power = SwitchPower(Relay8, Relay8Power);
+        break;
+      case buttonAll:
+        SwitchAll();
+        break;
+    }
+    receiver.resume(); // reset the receiver for the next code
+  }
+}
+int SwitchPower(byte LEDPin, int Power)
+{
+  if (Power == HIGH)
+  {
+    digitalWrite(LEDPin, LOW);
+    Power = LOW;
+  }
+  else
+  {
+    digitalWrite(LEDPin, HIGH);
+    Power = HIGH;
+  }
+  return Power;
+}
+void SwitchAll()
+{
+  if(RelayAllPower == HIGH)
+  {
+    RelayAllPower = LOW;
+    Relay1Power = LOW;
+    digitalWrite(Relay1, LOW);
+    Relay2Power = LOW;
+    digitalWrite(Relay2, LOW);
+    Relay3Power = LOW;
+    digitalWrite(Relay3, LOW);
+    Relay4Power = LOW;
+    digitalWrite(Relay4, LOW);
+    Relay5Power = LOW;
+    digitalWrite(Relay5, LOW);
+    Relay6Power = LOW;
+    digitalWrite(Relay6, LOW);
+    Relay7Power = LOW;
+    digitalWrite(Relay7, LOW);
+    Relay8Power = LOW;
+    digitalWrite(Relay8, LOW);
+  }
+  else
+  {
+    RelayAllPower = HIGH;
+    Relay1Power = HIGH;
+    digitalWrite(Relay1, HIGH);
+    Relay2Power = HIGH;
+    digitalWrite(Relay2, HIGH);
+    Relay3Power = HIGH;
+    digitalWrite(Relay3, HIGH);
+    Relay4Power = HIGH;
+    digitalWrite(Relay4, HIGH);
+    Relay5Power = HIGH;
+    digitalWrite(Relay5, HIGH);
+    Relay6Power = HIGH;
+    digitalWrite(Relay6, HIGH);
+    Relay7Power = HIGH;
+    digitalWrite(Relay7, HIGH);
+    Relay8Power = HIGH;
+    digitalWrite(Relay8, HIGH); 
+  }
+}
